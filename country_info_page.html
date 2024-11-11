@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Search</title>
+    <link rel="stylesheet" href="c_info.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="input">
+        <img src="icon.png" alt="">
+        <input type="text" id="countryName" placeholder="Enter country name">
+    </div>
+    <button id="searchButton">Search</button>
+    <div id="countryDetails" class="country">
+        <img id="countryFlag" src="" alt="">
+        <h2 id="countryNameHeading"></h2>
+        <p id="countryCapital"></p>
+        <p id="countryRegion"></p>
+        <p id="countryPopulation"></p>
+        <p id="countryArea"></p>
+        <p id="countryTimezone"></p>
+        <p id="countryCurrency"></p>
+        <iframe id="maps" src="" frameborder="0"></iframe>
+        
+    </div>
+    <button class="connect_with_your"></button>
+    <img class="my_p" src="Logo.png" alt="">
+
+    <script src="script.js"></script>
+</body>
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const apiUrl = 'https://restcountries.com/v3.1/name/';
+    const searchButton = document.getElementById('searchButton');
+    const countryNameInput = document.getElementById('countryName');
+    const countryDetails = document.getElementById('countryDetails');
+
+    searchButton.addEventListener('click', async () => {
+        const countryName = countryNameInput.value.trim();
+        if (!countryName) {
+            alert('Please enter a country name');
+            return;
+        }
+        try {
+            const response = await fetch(`${apiUrl}${countryName}`);
+            if (!response.ok) {
+                throw new Error('Country not found');
+            }
+            const countryData = await response.json();
+            populateCountryDetails(countryData[0]);
+        } catch (error) {
+            console.error('Error fetching country data:', error);
+            countryDetails.innerHTML = `<p>${error.message}</p>`;
+        }
+    });
+    function populateCountryDetails(country) {
+        document.getElementById('countryNameHeading').textContent = country.name.common;
+        document.getElementById('countryCapital').textContent = `Capital: ${country.capital ? country.capital[0] : 'N/A'}`;
+        document.getElementById('countryRegion').textContent = `Region: ${country.region}`;
+        document.getElementById('countryPopulation').textContent = `Population: ${country.population}`;
+        document.getElementById('countryArea').textContent = `Area: ${country.area} sq km`;
+        document.getElementById('countryTimezone').textContent = `Timezone: ${country.timezones ? country.timezones.join(', ') : 'N/A'}`;
+        document.getElementById('countryCurrency').textContent = `Currency: ${Object.values(country.currencies)[0].name} (${Object.values(country.currencies)[0].symbol})`;
+        document.getElementById('countryFlag').src = country.flags.png;
+        document.getElementById('countryFlag').alt = `Flag of ${country.name.common}`;
+        document.querySelector('.connect_with_your').textContent = `connect with ${country.name.common} with your's`;
+        document.querySelector("#maps").src = country.maps.openStreetMaps;
+        }
+});
+
+const inp = document.querySelector('.input')
+inp.addEventListener(onclick ,()=>{
+    inp.classList.toggle(active)
+})
+</script>
